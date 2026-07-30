@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderLust</title>
+    <% layout('layouts/boilerplate') %>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <%= success %>
+<h3>All Listings</h3>
+<div class="'card">
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+    <% for (let listing of allListings) { %>
+        <div class="card col listing-card ">
+            
+            <a href="/listings/<%= listing._id %>">
+          
+              <img 
+              src="<%= listing.image?.url || listing.image || 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80' %>" 
+              class="card-img-top"
+               alt="<%= listing.title %>">
+
+                <div class="card-img-overlay"></div>
+                <div class="card-body">
+                    <p class=" card-text">
+                        <b><%= listing.title %></b> <br>
+                        <%= listing.location %>
+                      <div class="price">
+    <% if (listing.price !== null && listing.price !== undefined) { %>
+        &#8377; <%= listing.price.toLocaleString("en-IN") %>
+    <% } else { %>
+        &#8377; Price not available
+    <% } %>
+</div>
+                  
+                </div>
+            </a>
+        </div>
+    <% } %>
+</div>
+</div>
+    <!--  -->
+
+</body>
+</html>

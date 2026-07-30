@@ -1,0 +1,132 @@
+body {
+    font-family: 'Plus Jakarata Sans', sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+   
+}
+.container {
+    flex:1;
+}
+.navbar {
+    height: 5 rem;
+    background-color: white;
+}
+
+.fa-compass {
+    color: #e23c47;
+    font-size: 2rem;
+}
+
+.nav-link {
+    color: #222222 !important;
+}
+.f-info-links a {
+    text-decoration:none;
+    color: #222222;
+}
+.f-info-links a:hover {
+    text-decoration:underline;
+}
+
+.f-info-links ,
+.f-info-socials, .f-info-brand{
+    width: 100%;
+    vertical-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.f-info { 
+
+    text-align: center;
+    height:8 rem;
+    display: flex;
+    background-color: #ebebeb;
+    flex-wrap:wrap;
+    justify-content: center;
+    align-items: space-evenly;  
+}
+
+/* card */
+
+.listing-card {
+    border: none;
+    margin-left: 1 rem;
+
+    margin-bottom:  1 rem;
+}
+
+.card img  {
+    margin-top: 10px;
+    border-radius: 10px;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+.card-body {
+    padding: 0 !important;
+}
+.card-text {
+    font-weight: 400 !important;
+}
+
+.card img {
+    width: 100% !important;
+    height: 300px !important;
+    object-fit: cover !important;
+    
+}
+.card a {
+    text-decoration: none;
+    color: #222222;
+    
+}
+.card .price {
+   color: #e23c47;
+    font-weight: 500;
+    
+}
+.card .price:hover {
+    font-size: 1.2 rem;
+    font-weight: 800;
+    color:rgb(55, 173, 32);
+}  
+.card-img-overlay {
+    opacity: 0;
+} 
+.card-img-overlay:hover {
+    opacity: 0.2;
+    background-color: white;
+
+}
+
+.row {
+    justify-content: center;
+}
+
+.add-btn {
+    background-color: #fe424d;
+    border:none !important;
+
+}
+
+/* edit page */
+.edit-btn {
+    background-color: #fe424d;
+    border:none !important;
+}
+
+/* show page */
+.show-img {
+    height: 30vh !important;
+}
+.show-card {
+    border: none;
+    margin-top: 1 rem;
+    margin-bottom: 1 rem;
+}
+.show-card {
+    padding-left: 0;
+    padding-right: 0;
+}
