@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const review = require('./review');
 
-const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80';
+// const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80';
 
 const listingSchema = new mongoose.Schema({
   title: {
@@ -15,8 +15,11 @@ const listingSchema = new mongoose.Schema({
     trim: true,
   },
   image: {
-    type: String,
-    default: DEFAULT_IMAGE,
+    url: {
+      type: String,
+      default: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
+    },
+    filename: String
   },
   price: Number,
   location: {
@@ -33,8 +36,47 @@ const listingSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Review'
+    },
+  ],
+  owner: {
+    type : mongoose.Schema.Types.ObjectId,
+    ref:'User'
+  },
+  geometry: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
     }
-  ]
+  },
+  category: {
+    type: String,
+    required: true,
+    enum: [
+      "Trending",
+      "Rooms",
+      "Iconic Cities",
+      "Beach",
+      "Amazing Pools",
+      "Castles",
+      "Mountains",
+      "Camping",
+      "Farms",
+      "Arctic",
+      "Boats",
+      "Skiing",
+      "Lakefront",
+      "Golfing",
+      "Tiny Homes",
+      "Tropical",
+      "Bed & Breakfast"
+    ],
+    trim: true
+  }
 });
 
 listingSchema.post("findOneAndDelete", async (listing) => {

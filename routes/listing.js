@@ -1,129 +1,47 @@
 const express = require('express');
+const methodOverride = require('method-override');
 const routes = express.Router();
 const wrapAsync = require('../utils/wrapAsyns.js');
-const ExpressError = require('../utils/ExpressError.js');
-const { listingSchema } = require('../schema.js');
-const Listing = require('../models/listing.js');
+const { isLoggedIn, isOwner, validateListing } = require('../middleware.js');
+const listingController = require('../controllers/listings.js');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
-const validateListing = (req, res, next) => {
-    let { error } = listingSchema.validate(req.body);
-  
-    if (error) {
-        let errMsg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(400, errMsg);
-    }else {
+routes.use(methodOverride('_method'));
+
+// Middleware to handle multer file upload errors gracefully
+const handleUpload = (req, res, next) => {
+    upload.single('listing[image]')(req, res, (err) => {
+        if (err) {
+            console.error('Image upload error:', err);
+        }
         next();
-    }
+    });
 };
 
-//Index Route
-routes.get('/', wrapAsync(async (req, res) => {
-     const allListings = await Listing.find({});
-     res.render('listings/index.ejs', { allListings });
-}));
-
-//New Route
-routes.get('/new', wrapAsync(async (req, res) => {
-    res.render('listings/new.ejs');
-}));
-
-//show Route
-routes.get('/:id', wrapAsync(async (req, res, next) => {
-    try{
-        let { id } = req.params;
-        const listing = await Listing.findById(id).populate('reviews');
-        if(!listing){
-            req.flash("error", "Listing you requested for does not exist!")
-            res.redirect("/listings");
-        }
-        res.render('listings/show.ejs', { listing });
-    
-        
-} catch (err) {
-    next.err;
-}}
-)) ;
-
-//Create Route
-routes.post('/',
-     validateListing,
-    wrapAsync(async (req, res, next) => {
+routes
+   .route('/')
+   .get(wrapAsync(listingController.index))
+   .post(
+      isLoggedIn,
+      upload.single("listing[image]"),
+      validateListing,
+      wrapAsync(listingController.createListing)
+   );
   
-    try {
-        if (!req.body.listing) {
-            throw new ExpressError(400, 'Invalid Listing Data');
-        }
 
-        const { title, description, location, country, price, image } = req.body.listing;
+// New Route
+routes.get('/new', isLoggedIn, wrapAsync(listingController.newListing));
 
-        if (!title?.trim() || !description?.trim() || !location?.trim() || !country?.trim()) {
-            throw new ExpressError(400, 'Title, description, country, and location are required');
-        }
 
-        const listing = new Listing({
-            title: title.trim(),
-            description: description.trim(),
-            location: location.trim(),
-            country: country.trim(),
-            price,
-            image: image?.trim() || 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80'
-        });
+// GET Edit route - render edit form (no validateListing needed for GET requests)
+routes.get('/:id/edit', isLoggedIn, isOwner, wrapAsync(listingController.editListing));
 
-        await listing.save();
-        req.flash("success","New Listing Created!");
-        res.redirect('/listings');
-    } catch (err) {
-        next(err);
-    }
-}));
-
-// GET Edit route - just render the form
-routes.get('/:id/edit', wrapAsync(async (req, res, next) => {
-    try {
-        let { id } = req.params;
-        const listing = await Listing.findById(id);
-          if(!listing){
-            req.flash("error", "Listing you requested for does not exist!")
-            res.redirect("/listings");
-        }
-        res.render('listings/edit.ejs', { listing });
-    } catch (err) {
-        next(err);
-    }
-}));
-
-// update route
-routes.put('/:id', validateListing, wrapAsync(async (req, res, next) => {
-    try {
-        if (!req.body.listing) {
-            throw new ExpressError(400, 'Invalid Listing Data');
-        }
-
-        let { id } = req.params;
-        let updateData = {
-            ...req.body.listing,
-            image: req.body.listing.image?.trim() || 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80'
-        };
-
-        await Listing.findByIdAndUpdate(id, updateData);
-        req.flash("success", "Listing Updated!")
-        res.redirect(`/listings/${id}`);
-    } catch (err) {
-        next(err);
-    }
-}));
-
-//Delete route
-routes.delete('/listings/:id', wrapAsync(async (req, res, next) => {
-    try {
-        let { id } = req.params;
-        const deletedListing = await Listing.findByIdAndDelete(id);
-        console.log('deleted listing:', deletedListing);
-        req.flash("Success", "Listing Deleted!")
-        res.redirect('/listings');
-    } catch (err) {
-        next(err);
-    }
-}));
+// Edit, Update and Delete route by using router.route
+routes
+   .route('/:id')
+   .get(wrapAsync(listingController.showListing))
+   .put(isLoggedIn, isOwner, handleUpload, validateListing, wrapAsync(listingController.updateListing))
+   .delete(isLoggedIn, isOwner, wrapAsync(listingController.deleteListing));
 
 module.exports = routes;

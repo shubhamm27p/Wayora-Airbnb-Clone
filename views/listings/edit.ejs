@@ -1,8 +1,8 @@
 <% layout('layouts/boilerplate') %>
-<div class="row mt-3">
-  <div class="col-8">
+<div class="row mt-3 justify-content-center">
+  <div class="col-8 col-md-6">
     <h3>Edit your Listing</h3>
-    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation">
+    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="title" class="form-label">Title</label>
         <input id="title" name="listing[title]" type="text" placeholder="Add a catchy title" class="form-control" value="<%= listing.title %>" required>
@@ -13,10 +13,16 @@
         <textarea id="description" name="listing[description]" class="form-control" required><%= listing.description %></textarea>
         <div class="invalid-feedback">Please enter a description.</div>
       </div>
+      <% if (originalImageUrl) { %>
+        <div class="mb-3">
+          <label class="form-label d-block">Original Listing Image</label>
+          <img src="<%= originalImageUrl %>" style="height: 180px; width: 260px; object-fit: cover; border-radius: 8px;" class="d-block mt-1" alt="Listing Image">
+        </div>
+      <% } %>
       <div class="mb-3">
-        <label for="image" class="form-label">Image</label>
-        <input id="image" name="listing[image]" class="form-control" type="url" value="<%= listing.image.url || listing.image %>" required>
-        <div class="invalid-feedback">Please enter an image URL.</div>
+        <label for="image" class="form-label">Upload a new Image</label>
+        <input id="image" name="listing[image]" class="form-control" type="file">
+        <div class="form-text">Leave blank to keep the current image.</div>
       </div>
       <div class="row">
         <div class="mb-3 col-md-4">
@@ -34,6 +40,32 @@
         <label for="location" class="form-label">Location</label>
         <input id="location" name="listing[location]" class="form-control" type="text" required value="<%= listing.location %>">
         <div class="invalid-feedback">Please enter location.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <select id="category" name="listing[category]" class="form-select" required>
+          <option value="">Select Category</option>
+          <option value="Trending" <%= listing.category === 'Trending' ? 'selected' : '' %>>Trending</option>
+          <option value="Rooms" <%= listing.category === 'Rooms' ? 'selected' : '' %>>Rooms</option>
+          <option value="Iconic Cities" <%= listing.category === 'Iconic Cities' ? 'selected' : '' %>>Iconic Cities</option>
+          <option value="Beach" <%= listing.category === 'Beach' ? 'selected' : '' %>>Beach</option>
+          <option value="Amazing Pools" <%= listing.category === 'Amazing Pools' ? 'selected' : '' %>>Amazing Pools</option>
+          <option value="Castles" <%= listing.category === 'Castles' ? 'selected' : '' %>>Castles</option>
+          <option value="Mountains" <%= listing.category === 'Mountains' ? 'selected' : '' %>>Mountains</option>
+          <option value="Camping" <%= listing.category === 'Camping' ? 'selected' : '' %>>Camping</option>
+          <option value="Farms" <%= listing.category === 'Farms' ? 'selected' : '' %>>Farms</option>
+          <option value="Arctic" <%= listing.category === 'Arctic' ? 'selected' : '' %>>Arctic</option>
+          <option value="Boats" <%= listing.category === 'Boats' ? 'selected' : '' %>>Boats</option>
+          <option value="Skiing" <%= listing.category === 'Skiing' ? 'selected' : '' %>>Skiing</option>
+          <option value="Lakefront" <%= listing.category === 'Lakefront' ? 'selected' : '' %>>Lakefront</option>
+          <option value="Golfing" <%= listing.category === 'Golfing' ? 'selected' : '' %>>Golfing</option>
+          <option value="Tiny Homes" <%= listing.category === 'Tiny Homes' ? 'selected' : '' %>>Tiny Homes</option>
+          <option value="Tropical" <%= listing.category === 'Tropical' ? 'selected' : '' %>>Tropical</option>
+          <option value="Bed & Breakfast" <%= listing.category === 'Bed & Breakfast' ? 'selected' : '' %>>Bed & Breakfast</option>
+        </select>
+        <div class="form-text text-muted">Choosing an accurate category helps guests discover your place faster when searching.</div>
+        <div class="invalid-feedback">Please select a category for your listing.</div>
       </div>
       <button class="btn btn-dark edit-btn mt-3">Edit</button>
     </form>
