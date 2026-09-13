@@ -12,8 +12,10 @@ body {
 }
 
 .navbar {
-    height: 5rem;
-    background-color: white;
+    height: 4rem;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .fa-compass {
@@ -99,49 +101,59 @@ body {
 
 .listing-card {
     border: none;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    border-radius: 15px;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+.listing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .card img {
-    margin-top: 10px;
-    border-radius: 10px;
+    border-radius: 15px;
     width: 100% !important;
+    height: 280px !important;
     object-fit: cover !important;
+    transition: transform 0.5s ease;
+}
+
+.listing-card:hover img {
+    transform: scale(1.02);
 }
 
 .card-body {
-    padding: 0 !important;
+    padding: 1rem 0 !important;
 }
 
 .card-text {
-    font-weight: 400 !important;
-}
-
-.card img {
-    width: 100% !important;
-    height: 300px !important;
-    object-fit: cover !important;
-
+    font-weight: 500 !important;
+    color: #444;
 }
 
 .card a {
     text-decoration: none;
     color: #222222;
-
 }
 
 .card .price {
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #e23c47;
+    margin-top: 0.5rem;
 }
 
 .card-img-overlay {
     opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 15px;
 }
 
-.card-img-overlay:hover {
-    opacity: 0.2;
-    background-color: white;
-
+.listing-card:hover .card-img-overlay {
+    opacity: 0.1;
+    background-color: #fff;
 }
 
 .row {

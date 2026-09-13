@@ -323,7 +323,7 @@ module.exports.deleteListing = async (req, res, next) => {
         let { id } = req.params;
         const deletedListing = await Listing.findByIdAndDelete(id);
         console.log('deleted listing:', deletedListing);
-        req.flash("Success", "Listing Deleted!")
+        req.flash("success", "Listing Deleted!")
         res.redirect('/listings');
     } catch (err) {
         next(err);

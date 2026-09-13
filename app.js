@@ -10,6 +10,7 @@ const methodoverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const ExpressError = require('./utils/ExpressError.js');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 const passport = require('passport');
 const localStarategy = require('passport-local');
@@ -24,7 +25,7 @@ const reviewRouter = require('./routes/reviews.js');
 const userRouter = require('./routes/user.js');
 
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/wanderlust";
 
 const validateListing = (req, res, next) => {
     let { error } = listingSchema.validate(req.body);
@@ -45,7 +46,7 @@ main()
         console.log(err);
      });    
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(dbUrl);
 }   
 
 app.set("view engine", "ejs");
@@ -57,7 +58,20 @@ app.use(methodoverride('_method'));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, 'public')));
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {
+        secret: process.env.SECRET
+    },
+    touchAfter: 24 * 3600
+});
+
+store.on("error", (err) => {
+    console.log("ERROR in MONGO SESSION STORE", err);
+});
+
 const sessionOption ={
+    store,
     secret:process.env.SECRET,
     resave: false,
     saveUninitialized: true,
@@ -100,17 +114,16 @@ app.use('/listings', listingRouter);
 app.use('/listings/:id/reviews', reviewRouter);
 app.use('/', userRouter);
 
-app.use((req, res, next) => {
-    next(new ExpressError(404, 'Page Not Found'));
-});
+
 
 app.use((err, req, res, next) => {
     let { statusCode = 500, message = 'Something went wrong!' } = err;
     res.status(statusCode).render('err.ejs', { statusCode, message });
 });
 
-app.listen(8080, () => {
-    console.log('Server is running on port 8080');
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });
 
 app.get('/privacy', (req, res) => {
