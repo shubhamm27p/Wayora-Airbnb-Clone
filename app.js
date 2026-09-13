@@ -11,6 +11,8 @@ const ejsMate = require('ejs-mate');
 const ExpressError = require('./utils/ExpressError.js');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+// Fix for connect-mongo v6 CommonJS export changes
+const MongoStoreClass = MongoStore.default || MongoStore;
 const flash = require('connect-flash');
 const passport = require('passport');
 const localStarategy = require('passport-local');
@@ -58,7 +60,7 @@ app.use(methodoverride('_method'));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, 'public')));
 
-const store = MongoStore.create({
+const store = MongoStoreClass.create({
     mongoUrl: dbUrl,
     crypto: {
         secret: process.env.SECRET
