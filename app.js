@@ -140,6 +140,8 @@ app.use((req, res, next) => {
     next(new ExpressError(404, 'Page Not Found'));
 });
 
+module.exports = app;
+
 
 // app.get("/testListing", async (req, res) => {
 //   let sampleListing = new Listing({
