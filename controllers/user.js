@@ -25,7 +25,7 @@ module.exports.signupUser = async (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            req.flash("success", "Welcome to Wanderlust!");
+            req.flash("success", "Welcome to Wayora!");
             res.redirect(redirectUrl);
         });       
     } catch (e) {

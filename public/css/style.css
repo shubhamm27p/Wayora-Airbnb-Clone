@@ -87,14 +87,15 @@ body {
 }
 
 .f-info {
-
     text-align: center;
-    height: 8rem;
+    height: auto;
+    padding: 1rem 0;
     display: flex;
     background-color: #ebebeb;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 0.5rem;
     justify-content: center;
-    align-items: space-evenly;
+    align-items: center;
 }
 
 /* card */
