@@ -104,6 +104,10 @@ app.use((req, res, next) =>{
 });
 
 
+app.get('/', (req, res) => {
+    res.redirect('/listings');
+});
+
 app.get(['/listing', '/listing/'], (req, res) => {
     res.redirect('/listings');
 });
